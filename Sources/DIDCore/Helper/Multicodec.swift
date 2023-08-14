@@ -13,6 +13,8 @@ public struct Multicodec {
         case ED25519 = 0xED
     }
     
+    public init() {}
+    
     public func toMulticodec(value: Data, codec: Codec) -> Data {
         let prefix = codec.rawValue
         var data = Data(putUVarInt(UInt64(prefix)))

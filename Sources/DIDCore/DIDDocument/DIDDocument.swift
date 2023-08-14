@@ -14,14 +14,21 @@ public struct DIDDocument {
         public let controller: String
         public let type: String
         public let material: VerificationMaterial
+        
+        public init(
+            id: String,
+            controller: String,
+            type: String,
+            material: VerificationMaterial
+        ) {
+            self.id = id
+            self.controller = controller
+            self.type = type
+            self.material = material
+        }
     }
     
     public struct Service {
-        public let id: String
-        public let type: String
-        public let serviceEndpoint: ServiceEndpoint
-        public let routingKeys: [String]?
-        public let accept: [String]?
         
         public enum ServiceEndpoint {
             case string(String)
@@ -34,6 +41,26 @@ public struct DIDDocument {
                 case mapValue([String: String])
             }
         }
+        
+        public let id: String
+        public let type: String
+        public let serviceEndpoint: ServiceEndpoint
+        public let routingKeys: [String]?
+        public let accept: [String]?
+        
+        public init(
+            id: String,
+            type: String,
+            serviceEndpoint: ServiceEndpoint,
+            routingKeys: [String]? = nil,
+            accept: [String]? = nil
+        ) {
+            self.id = id
+            self.type = type
+            self.serviceEndpoint = serviceEndpoint
+            self.routingKeys = routingKeys
+            self.accept = accept
+        }
     }
     
     public enum VerificationMethodMapping {
@@ -42,15 +69,36 @@ public struct DIDDocument {
     }
     
     public let id: String
-    public let alsoKnownAs: String
-    public let controller: String
+    public let alsoKnownAs: String?
+    public let controller: String?
     public let verificationMethods: [VerificationMethod]
-    public let authentication: [VerificationMethodMapping]
-    public let assertionMethod: [VerificationMethodMapping]
-    public let capabilityDelegation: [VerificationMethodMapping]
-    public let keyAgreement: [VerificationMethodMapping]
+    public let authentication: [VerificationMethodMapping]?
+    public let assertionMethod: [VerificationMethodMapping]?
+    public let capabilityDelegation: [VerificationMethodMapping]?
+    public let keyAgreement: [VerificationMethodMapping]?
+    public let services: [Service]?
     
-    public let services: [Service]
+    public init(
+        id: String,
+        alsoKnownAs: String? = nil,
+        controller: String? = nil,
+        verificationMethods: [VerificationMethod] = [],
+        authentication: [VerificationMethodMapping]? = nil,
+        assertionMethod: [VerificationMethodMapping]? = nil,
+        capabilityDelegation: [VerificationMethodMapping]? = nil,
+        keyAgreement: [VerificationMethodMapping]? = nil,
+        services: [Service]? = nil
+    ) {
+        self.id = id
+        self.alsoKnownAs = alsoKnownAs
+        self.controller = controller
+        self.verificationMethods = verificationMethods
+        self.authentication = authentication
+        self.assertionMethod = assertionMethod
+        self.capabilityDelegation = capabilityDelegation
+        self.keyAgreement = keyAgreement
+        self.services = services
+    }
 }
 
 extension DIDDocument: Codable {}
@@ -193,7 +241,8 @@ extension DIDDocument.VerificationMethod: Codable {
         case .base58:
             try container.encode(String(data: material.value, encoding: .utf8), forKey: .publicKeyBase58)
         case .jwk:
-            try container.encode(material.value, forKey: .publicKeyJwk)
+            let jwk = try JSONDecoder().decode(JWK.self, from: material.value)
+            try container.encode(jwk, forKey: .publicKeyJwk)
         case .multibase:
             try container.encode(String(data: material.value, encoding: .utf8), forKey: .publicKeyMultibase)
         }

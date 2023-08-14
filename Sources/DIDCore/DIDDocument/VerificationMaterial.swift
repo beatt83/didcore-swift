@@ -78,6 +78,11 @@ public enum KnownVerificationMaterialType: RawRepresentable, Codable {
 public struct VerificationMaterial {
     public let format: VerificationMaterialFormat
     public let value: Data
+    
+    public init(format: VerificationMaterialFormat, value: Data) {
+        self.format = format
+        self.value = value
+    }
 }
 
 extension VerificationMaterial: Codable {}
