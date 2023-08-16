@@ -32,7 +32,7 @@ public struct JWK {
     // For Octet key (symmetric)
     public let k: String?                // Key value
     
-    init(
+    public init(
         kty: String,
         use: String? = nil,
         key_ops: [String]? = nil,
@@ -70,7 +70,7 @@ public struct JWK {
 }
 
 extension JWK {
-    init(key: Data, type: KnownVerificationMaterialType) throws {
+    public init(key: Data, type: KnownVerificationMaterialType) throws {
         let kty = "OKP"
         let x = key.base64URLEncoded(padded: false)
         let crv: String
