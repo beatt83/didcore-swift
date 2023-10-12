@@ -43,8 +43,9 @@ public enum KnownVerificationMaterialType: RawRepresentable, Codable {
             self = .agreement(agreementType)
         } else if let autheticationType = AuthenticationType(rawValue: rawValue) {
             self = .authentication(autheticationType)
+        } else {
+            return nil
         }
-        return nil
     }
     
     public var rawValue: String {
