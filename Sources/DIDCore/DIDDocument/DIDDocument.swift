@@ -29,37 +29,19 @@ public struct DIDDocument {
     }
     
     public struct Service {
-        
-        public enum ServiceEndpoint {
-            case string(String)
-            case set([String])
-            case map([String: String])
-            case combo([EndpointElement])
-            
-            public enum EndpointElement {
-                case stringValue(String)
-                case mapValue([String: String])
-            }
-        }
-        
         public let id: String
         public let type: String
-        public let serviceEndpoint: ServiceEndpoint
-        public let routingKeys: [String]?
-        public let accept: [String]?
+        // Its not ideal that the service endpoint is a AnyCodable but since by the specification we cannot know the structure of the serviceEndpoint structure this is the best way.
+        public let serviceEndpoint: AnyCodable
         
         public init(
             id: String,
             type: String,
-            serviceEndpoint: ServiceEndpoint,
-            routingKeys: [String]? = nil,
-            accept: [String]? = nil
+            serviceEndpoint: AnyCodable
         ) {
             self.id = id
             self.type = type
             self.serviceEndpoint = serviceEndpoint
-            self.routingKeys = routingKeys
-            self.accept = accept
         }
     }
     
@@ -103,36 +85,6 @@ public struct DIDDocument {
 
 extension DIDDocument: Codable {}
 extension DIDDocument.Service: Codable {}
-extension DIDDocument.Service.ServiceEndpoint: Codable {
-    // Codable conformance for ServiceEndpoint
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let value = try? container.decode(String.self) {
-            self = .string(value)
-        } else if let set = try? container.decode([String].self) {
-            self = .set(set)
-        } else if let map = try? container.decode([String: String].self) {
-            self = .map(map)
-        } else {
-            let combo = try container.decode([EndpointElement].self)
-            self = .combo(combo)
-        }
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch self {
-        case .string(let value):
-            try container.encode(value)
-        case .set(let set):
-            try container.encode(set)
-        case .map(let map):
-            try container.encode(map)
-        case .combo(let combo):
-            try container.encode(combo)
-        }
-    }
-}
 
 extension DIDDocument.VerificationMethodMapping: Codable {
     // Codable conformance for EndpointElement
@@ -153,29 +105,6 @@ extension DIDDocument.VerificationMethodMapping: Codable {
             try container.encode(value)
         case .verificationMethod(let verificationMethod):
             try container.encode(verificationMethod)
-        }
-    }
-}
-
-extension DIDDocument.Service.ServiceEndpoint.EndpointElement: Codable {
-    // Codable conformance for EndpointElement
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let value = try? container.decode(String.self) {
-            self = .stringValue(value)
-        } else {
-            let mapValue = try container.decode([String: String].self)
-            self = .mapValue(mapValue)
-        }
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch self {
-        case .stringValue(let value):
-            try container.encode(value)
-        case .mapValue(let map):
-            try container.encode(map)
         }
     }
 }
