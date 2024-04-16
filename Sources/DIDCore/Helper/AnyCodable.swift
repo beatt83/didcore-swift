@@ -7,7 +7,7 @@ public struct AnyCodable {
         self.value = value
     }
     
-    init(_ value: Any) {
+    public init(_ value: Any) {
         self.value = value
     }
     
