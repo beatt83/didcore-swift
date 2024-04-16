@@ -28,6 +28,7 @@ public struct DIDDocument {
         }
     }
     
+    // Service may contain extensions, with this in mind this Service model is the basic structure of a Service as described in [did-core](https://www.w3.org/TR/did-core/#services). But the DIDDocument itself uses AnyCodable for the service.
     public struct Service {
         public let id: String
         public let type: String
@@ -42,6 +43,20 @@ public struct DIDDocument {
             self.id = id
             self.type = type
             self.serviceEndpoint = serviceEndpoint
+        }
+        
+        public init(from: AnyCodable) throws {
+            guard
+                let value = from.value as? [String: Any],
+                let id = value["id"] as? String,
+                let type = value["type"] as? String,
+                let serviceEndpoint = value["serviceEndpoint"]
+            else {
+                throw DIDCoreError.somethingWentWrong
+            }
+            self.id = id
+            self.type = type
+            self.serviceEndpoint = AnyCodable(serviceEndpoint)
         }
     }
     
@@ -58,7 +73,7 @@ public struct DIDDocument {
     public let assertionMethod: [VerificationMethodMapping]?
     public let capabilityDelegation: [VerificationMethodMapping]?
     public let keyAgreement: [VerificationMethodMapping]?
-    public let services: [Service]?
+    public let services: [AnyCodable]?
     
     public init(
         id: String,
@@ -69,7 +84,7 @@ public struct DIDDocument {
         assertionMethod: [VerificationMethodMapping]? = nil,
         capabilityDelegation: [VerificationMethodMapping]? = nil,
         keyAgreement: [VerificationMethodMapping]? = nil,
-        services: [Service]? = nil
+        services: [AnyCodable]? = nil
     ) {
         self.id = id
         self.alsoKnownAs = alsoKnownAs
