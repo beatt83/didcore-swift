@@ -68,7 +68,7 @@ public struct DIDDocument {
     public let id: String
     public let alsoKnownAs: String?
     public let controller: String?
-    public let verificationMethods: [VerificationMethod]
+    public let verificationMethods: [VerificationMethod]?
     public let authentication: [VerificationMethodMapping]?
     public let assertionMethod: [VerificationMethodMapping]?
     public let capabilityDelegation: [VerificationMethodMapping]?
@@ -79,7 +79,7 @@ public struct DIDDocument {
         id: String,
         alsoKnownAs: String? = nil,
         controller: String? = nil,
-        verificationMethods: [VerificationMethod] = [],
+        verificationMethods: [VerificationMethod]? = nil,
         authentication: [VerificationMethodMapping]? = nil,
         assertionMethod: [VerificationMethodMapping]? = nil,
         capabilityDelegation: [VerificationMethodMapping]? = nil,
