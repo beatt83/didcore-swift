@@ -63,12 +63,21 @@ public struct DIDDocument {
     public enum VerificationMethodMapping {
         case stringValue(String)
         case verificationMethod(VerificationMethod)
+        
+        var id: String {
+            switch self {
+            case .stringValue(let string):
+                return string
+            case .verificationMethod(let verificationMethod):
+                return verificationMethod.id
+            }
+        }
     }
     
     public let id: String
     public let alsoKnownAs: String?
     public let controller: String?
-    public let verificationMethods: [VerificationMethod]?
+    public let verificationMethod: [VerificationMethod]?
     public let authentication: [VerificationMethodMapping]?
     public let assertionMethod: [VerificationMethodMapping]?
     public let capabilityDelegation: [VerificationMethodMapping]?
@@ -79,7 +88,7 @@ public struct DIDDocument {
         id: String,
         alsoKnownAs: String? = nil,
         controller: String? = nil,
-        verificationMethods: [VerificationMethod]? = nil,
+        verificationMethod: [VerificationMethod]? = nil,
         authentication: [VerificationMethodMapping]? = nil,
         assertionMethod: [VerificationMethodMapping]? = nil,
         capabilityDelegation: [VerificationMethodMapping]? = nil,
@@ -89,7 +98,7 @@ public struct DIDDocument {
         self.id = id
         self.alsoKnownAs = alsoKnownAs
         self.controller = controller
-        self.verificationMethods = verificationMethods
+        self.verificationMethod = verificationMethod
         self.authentication = authentication
         self.assertionMethod = assertionMethod
         self.capabilityDelegation = capabilityDelegation
@@ -149,12 +158,11 @@ extension DIDDocument.VerificationMethod: Codable {
                 value: data
             )
         } else if
-            let jwk = try container.decodeIfPresent(String.self, forKey: .publicKeyJwk),
-            let data = Data(base64URLEncoded: jwk)
+            let jwk = try container.decodeIfPresent(JWK.self, forKey: .publicKeyJwk)
         {
             material = VerificationMaterial(
                 format: .jwk,
-                value: data
+                value: try JSONEncoder.DIDDocumentEncoder().encode(jwk)
             )
         } else if
             let multibase = try container.decodeIfPresent(String.self, forKey: .publicKeyMultibase),
