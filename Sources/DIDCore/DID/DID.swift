@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct DID {
+public struct DID: Sendable, Hashable, Equatable {
     public let schema: String
     public let method: String
     public let methodId: String
