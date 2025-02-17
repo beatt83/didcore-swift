@@ -9,7 +9,7 @@ import Foundation
 
 public struct DIDDocument {
     
-    public struct VerificationMethod {
+    public struct VerificationMethod: Sendable, Hashable, Equatable {
         public let id: String
         public let controller: String
         public let type: String

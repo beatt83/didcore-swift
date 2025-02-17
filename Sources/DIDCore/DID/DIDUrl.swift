@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct DIDUrl {
+public struct DIDUrl: Sendable, Hashable, Equatable {
     public let did: DID
     public let queries: [String: String]
     public let path: String?

@@ -9,7 +9,7 @@ import BaseX
 import Multibase
 import Foundation
 
-public enum VerificationMaterialFormat: String, Codable {
+public enum VerificationMaterialFormat: String, Codable, Sendable, Hashable, Equatable {
     case jwk
     case base58
     case multibase
@@ -76,7 +76,7 @@ public enum KnownVerificationMaterialType: RawRepresentable, Codable {
     }
 }
 
-public struct VerificationMaterial {
+public struct VerificationMaterial: Sendable, Hashable, Equatable {
     public let format: VerificationMaterialFormat
     public let value: Data
     
