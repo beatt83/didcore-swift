@@ -70,11 +70,27 @@ public struct DIDUrl: Sendable, Hashable, Equatable {
     }
 }
 
+extension DIDUrl: Identifiable {
+    public var id: String {
+        description
+    }
+}
+
 extension DIDUrl: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         guard let didUrl = DIDUrl(from: value) else {
             fatalError("Invalid DIDUrl string literal: \(value)")
         }
         self = didUrl
+    }
+}
+
+extension DIDUrl: CustomStringConvertible {
+    public var description: String {
+        guard var url = URLComponents(string: did.description) else { return "" }
+        if let path { url.path = path }
+        url.queryItems = queries.map { .init(name: $0, value: $1) }
+        url.fragment = fragment
+        return url.string ?? ""
     }
 }

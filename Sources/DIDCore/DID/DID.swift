@@ -38,6 +38,12 @@ public struct DID: Sendable, Hashable, Equatable {
     }
 }
 
+extension DID: Identifiable {
+    public var id: String {
+        description
+    }
+}
+
 extension DID: ExpressibleByStringLiteral {
     
     public init(stringLiteral value: String) {

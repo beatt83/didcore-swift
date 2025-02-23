@@ -18,6 +18,7 @@ final class DIDUrlParsingTests: XCTestCase {
         XCTAssertTrue(didUrl1?.queries.isEmpty ?? false)
         XCTAssertNil(didUrl1?.path)
         XCTAssertNil(didUrl1?.fragment)
+        XCTAssertEqual("did:example:123456789abcdefghi", didUrl1)
         
         let example2 = "did:example:123456/path"
         let didUrl2 = DIDUrl(from: example2)
@@ -27,6 +28,7 @@ final class DIDUrlParsingTests: XCTestCase {
         XCTAssertTrue(didUrl2?.queries.isEmpty ?? false)
         XCTAssertEqual(didUrl2?.path, "/path")
         XCTAssertNil(didUrl2?.fragment)
+        XCTAssertEqual("did:example:123456/path", didUrl2)
         
         let example3 = "did:example:123456?versionId=1"
         let didUrl3 = DIDUrl(from: example3)
@@ -36,6 +38,7 @@ final class DIDUrlParsingTests: XCTestCase {
         XCTAssertEqual(didUrl3?.queries["versionId"], "1")
         XCTAssertNil(didUrl3?.path)
         XCTAssertNil(didUrl3?.fragment)
+        XCTAssertEqual("did:example:123456?versionId=1", didUrl3)
         
         let example4 = "did:example:123#public-key-0"
         let didUrl4 = DIDUrl(from: example4)
@@ -45,6 +48,7 @@ final class DIDUrlParsingTests: XCTestCase {
         XCTAssertTrue(didUrl4?.queries.isEmpty ?? false)
         XCTAssertNil(didUrl4?.path)
         XCTAssertEqual(didUrl4?.fragment, "public-key-0")
+        XCTAssertEqual("did:example:123#public-key-0", didUrl4)
         
         let example5 = "did:example:123?service=agent&relativeRef=/credentials#degree"
         let didUrl5 = DIDUrl(from: example5)
@@ -55,5 +59,6 @@ final class DIDUrlParsingTests: XCTestCase {
         XCTAssertEqual(didUrl5?.queries["relativeRef"], "/credentials")
         XCTAssertNil(didUrl5?.path)
         XCTAssertEqual(didUrl5?.fragment, "degree")
+        XCTAssertEqual("did:example:123?service=agent&relativeRef=/credentials#degree", didUrl5)
     }
 }
