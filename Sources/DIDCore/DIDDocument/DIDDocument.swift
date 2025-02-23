@@ -201,6 +201,10 @@ extension DIDDocument.VerificationMethod: Codable {
     }
 }
 
+extension DIDDocument: Identifiable {}
+extension DIDDocument.VerificationMethod: Identifiable {}
+extension DIDDocument.Service: Identifiable {}
+
 extension VerificationMaterialFormat {
     
     init(fromKey: String) throws {
